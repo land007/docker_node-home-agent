@@ -38,7 +38,7 @@ const server = http.createServer(async (req, res) => {
 		} else if(pathname == '/reset.json') {// http://127.0.0.1/reset.json?ip=192.168.6.66
 			var arg = url.parse(req.url).query;
 			var ip = querystring.parse(arg).ip || get_client_ip(req) || '';
-			var ip_obj = home_agent_k2p.application_delay(ip);
+			var ip_obj = await home_agent_k2p.application_delay(ip);
 			res.end(JSON.stringify(ip_obj, null, 4));
 		} else {
 			res.statusCode = 404;
