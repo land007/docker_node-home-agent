@@ -479,12 +479,13 @@ var get_ip_obj = function(ip) {
 };
 
 //申请延时
-var application_delay = function(ip) {
+var application_delay = async function(ip) {
 	let ip_obj = get_ip_obj(ip);
 	if(ip_obj) {
 		ip_obj.time = 0;
 		ip_obj.exceed = false;
 	}
+	await verify();
 	return ip_obj;
 };
 
