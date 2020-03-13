@@ -462,6 +462,26 @@ var scheduleCronstyle = function() {
 
 scheduleCronstyle();
 
-module.exports = {start};
+//获取剩余时间
+var get_ip_obj = function(ip) {
+	let ip_obj;
+	for(let i in ip_list) {
+		if(ip_list[i].ip == ip) {
+			ip_obj = ip_list[i];
+			break;
+		}
+	}
+	return ip_obj;
+};
+
+//申请延时
+var application_delay = function(ip) {
+	let ip_obj = get_ip_obj(ip);
+	if(ip_obj) {
+		ip_obj.time = 0;
+	}
+};
+
+module.exports = {start, get_ip_obj, application_delay};
 
 
