@@ -480,6 +480,7 @@ var application_delay = function(ip) {
 	if(ip_obj) {
 		ip_obj.time = 0;
 	}
+	return ip_obj;
 };
 
 module.exports = {start, get_ip_obj, application_delay};
