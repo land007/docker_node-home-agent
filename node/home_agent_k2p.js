@@ -9,6 +9,7 @@ const schedule = require('node-schedule');
 const moment = require('moment');
 const readFile = (fileName) => promisify(fs.readFile)(fileName, 'utf8');
 const unite = require('./unite');
+const home_device_list = require('./home_device_list');
 const querystring = require('querystring');
 
 const PipeMax = process.env['PIPEMAX'] || '20';// 同时任务数
@@ -16,51 +17,54 @@ const PageMax = process.env['PAGEMAX'] || '8';// 最大页数
 
 const timer = parseInt(process.env['TIMER'] || '10');//秒钟
 const Cron = '*/' + timer + ' * * * * *';//每30秒触发
+const RouteHost = process.env['ROUTEHOST'] || '192.168.1.231:18080';
+const Basic = process.env['BASIC'] || 'bGFuZDAwNzo0MTk3MTg=';//路由器验证
 const maxTime = parseInt(process.env['MAXTIME'] || '1') * 60;//分钟
 
 //需修改字符
-const ip_list = [
-		{
-			name: 'huawei',
-			ip: '192.168.6.27',
-			count: 0,
-			maxCount: 10,
-			time: 0,
-			maxTime: maxTime,
-			reduceTime: 4 * timer,
-			exceed: false
-		},
-		{
-			name: 'iphone 77',
-			ip: '192.168.6.66',
-			count: 0,
-			maxCount: 5,
-			time: 0,
-			maxTime: maxTime,
-			reduceTime: 4 * timer,
-			exceed: false
-		},
-		{
-			name: 'ipad',
-			ip: '192.168.6.231',
-			count: 0,
-			maxCount: 5,
-			time: 0,
-			maxTime: maxTime,
-			reduceTime: 4 * timer,
-			exceed: false
-		},
-		{
-			name: 'mi box',
-			ip: '192.168.6.14',
-			count: 0,
-			maxCount: 10,
-			time: 0,
-			maxTime: maxTime,
-			reduceTime: 4 * timer,
-			exceed: false
-		}
-	];
+var ip_list = home_device_list.get_ip_list(maxTime, timer);
+//const ip_list = [
+//		{
+//			name: 'huawei',
+//			ip: '192.168.6.27',
+//			count: 0,
+//			maxCount: 10,
+//			time: 0,
+//			maxTime: maxTime,
+//			reduceTime: 4 * timer,
+//			exceed: false
+//		},
+//		{
+//			name: 'iphone 77',
+//			ip: '192.168.6.66',
+//			count: 0,
+//			maxCount: 5,
+//			time: 0,
+//			maxTime: maxTime,
+//			reduceTime: 4 * timer,
+//			exceed: false
+//		},
+//		{
+//			name: 'ipad',
+//			ip: '192.168.6.231',
+//			count: 0,
+//			maxCount: 5,
+//			time: 0,
+//			maxTime: maxTime,
+//			reduceTime: 4 * timer,
+//			exceed: false
+//		},
+//		{
+//			name: 'mi box',
+//			ip: '192.168.6.14',
+//			count: 0,
+//			maxCount: 10,
+//			time: 0,
+//			maxTime: maxTime,
+//			reduceTime: 4 * timer,
+//			exceed: false
+//		}
+//	];
 var start_apply_ip_list = [];
 //start_apply_ip_list = [
 //		{
@@ -111,13 +115,13 @@ var get_connections_status = function() {
 		let options = {
 			method: 'GET',
 //			jar: true,
-			uri: 'http://192.168.1.231:18080/Main_CTStatus_Content.asp',
+			uri: 'http://' + RouteHost + '/Main_CTStatus_Content.asp',
 			headers: {
 				'accept': 'text/javascript, application/javascript, application/ecmascript, application/x-ecmascript, */*; q=0.01',
 //					'accept-encoding': 'gzip, deflate',
 				'accept-encoding': 'deflate',
 				'accept-language': 'zh-CN,zh;q=0.9,en;q=0.8',
-				'Authorization': 'Basic bGFuZDAwNzo0MTk3MTg=',
+				'Authorization': 'Basic ' + Basic,
 				'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.116 Safari/537.36',
 			}
 		};
@@ -157,7 +161,7 @@ var add_start_apply = function(ip) {
 		let form = {
 			current_page: 'Advanced_Firewall_Content.asp',
 			next_page: '',
-			next_host: '192.168.1.231:18080',
+			next_host: RouteHost,
 			sid_list: 'FirewallConfig;',
 			group_id: 'LWFilterList',
 			action_mode: '+Add+',//'+Del+'
@@ -199,17 +203,17 @@ var add_start_apply = function(ip) {
 		let options = {
 			method: 'POST',
 			//jar: true,
-			uri: 'http://192.168.1.231:18080/start_apply.htm',
+			uri: 'http://' + RouteHost + '/start_apply.htm',
 			headers: {
 				'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
 //					'accept-encoding': 'gzip, deflate',
 				'accept-encoding': 'deflate',
 				'accept-language': 'zh-CN,zh;q=0.9,en;q=0.8',
-				'Authorization': 'Basic bGFuZDAwNzo0MTk3MTg=',
+				'Authorization': 'Basic ' + Basic,
 				'Content-Length': contentLength,
 			    'Content-Type': 'application/x-www-form-urlencoded',
-				'Origin': 'http://192.168.1.231:18080',
-				'Referer': 'http://192.168.1.231:18080/Advanced_Firewall_Content.asp',
+				'Origin': 'http://' + RouteHost,
+				'Referer': 'http://' + RouteHost + '/Advanced_Firewall_Content.asp',
 				'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.116 Safari/537.36',
 			},
 			body: formData
@@ -232,7 +236,7 @@ var del_start_apply = function() {
 		let form = {
 			current_page: 'Advanced_Firewall_Content.asp',
 			next_page: '',
-			next_host: '192.168.1.231:18080',
+			next_host: RouteHost,
 			sid_list: 'FirewallConfig;',
 			group_id: 'LWFilterList',
 			action_mode: '+Del+',
@@ -271,17 +275,17 @@ var del_start_apply = function() {
 		let options = {
 			method: 'POST',
 			//jar: true,
-			uri: 'http://192.168.1.231:18080/start_apply.htm',
+			uri: 'http://' + RouteHost + '/start_apply.htm',
 			headers: {
 				'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
 //					'accept-encoding': 'gzip, deflate',
 				'accept-encoding': 'deflate',
 				'accept-language': 'zh-CN,zh;q=0.9,en;q=0.8',
-				'Authorization': 'Basic bGFuZDAwNzo0MTk3MTg=',
+				'Authorization': 'Basic ' + Basic,
 				'Content-Length': contentLength,
 			    'Content-Type': 'application/x-www-form-urlencoded',
-				'Origin': 'http://192.168.1.231:18080',
-				'Referer': 'http://192.168.1.231:18080/Advanced_Firewall_Content.asp',
+				'Origin': 'http://' + RouteHost,
+				'Referer': 'http://' + RouteHost + '/Advanced_Firewall_Content.asp',
 				'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.116 Safari/537.36',
 			},
 			body: formData
@@ -305,7 +309,7 @@ var accept_start_apply = function(num) {
 		let form = {
 			current_page: '/Advanced_Firewall_Content.asp',
 			next_page: '',
-			next_host: '192.168.1.231:18080',
+			next_host: RouteHost,
 			sid_list: 'FirewallConfig;',
 			group_id: 'LWFilterList',
 			action_mode: '+Restart+',
@@ -342,17 +346,17 @@ var accept_start_apply = function(num) {
 		let options = {
 			method: 'POST',
 			//jar: true,
-			uri: 'http://192.168.1.231:18080/start_apply.htm',
+			uri: 'http://' + RouteHost + '/start_apply.htm',
 			headers: {
 				'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
 //					'accept-encoding': 'gzip, deflate',
 				'accept-encoding': 'deflate',
 				'accept-language': 'zh-CN,zh;q=0.9,en;q=0.8',
-				'Authorization': 'Basic bGFuZDAwNzo0MTk3MTg=',
+				'Authorization': 'Basic ' + Basic,
 				'Content-Length': contentLength,
 			    'Content-Type': 'application/x-www-form-urlencoded',
-				'Origin': 'http://192.168.1.231:18080',
-				'Referer': 'http://192.168.1.231:18080/Advanced_Firewall_Content.asp',
+				'Origin': 'http://' + RouteHost,
+				'Referer': 'http://' + RouteHost + '/Advanced_Firewall_Content.asp',
 				'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.116 Safari/537.36',
 			},
 			body: formData
