@@ -32,10 +32,10 @@ ENV PIPEMAX=20\
 #日志需处理
 #任务需处理
 
-#> docker buildx build --platform linux/amd64,linux/arm64,linux/arm/v7 -t land007/node-home-agent --push .
-#docker build -t land007/node-home-agent:latest .
-#docker run -it --rm -e "TIMER=10" -e "MAXTIME=1" land007/node-home-agent:latest
-#docker run -it --restart always --privileged -v ~/docker/node-home-agent:/node -p 80:80  -e "TIMER=30" -e "MAXTIME=40" land007/node-home-agent:latest
-#docker run -it --restart always --name node-home-agent --privileged -v ~/docker/node-home-agent:/node -e "TIMER=30" -e "MAXTIME=30" land007/node-home-agent:latest
+#> docker buildx build --platform linux/amd64,linux/arm64,linux/arm/v7 -t land007/node-dueros --push .
+#docker build -t land007/node-dueros:latest .
+#docker run -it --rm -e "TIMER=10" -e "MAXTIME=1" land007/node-dueros:latest
+#docker run -it --restart always --privileged -v ~/docker/node-dueros:/node -p 80:80  -e "TIMER=30" -e "MAXTIME=40" land007/node-dueros:latest
+#docker run -it --restart always --name node-dueros --privileged -v ~/docker/node-dueros:/node -e "TIMER=30" -e "MAXTIME=30" land007/node-dueros:latest
 #docker kill watchtower ; docker rm watchtower ; docker run -d --name watchtower -v /var/run/docker.sock:/var/run/docker.sock -v ~/.docker/config.json:/config.json v2tec/watchtower --interval 30 --label-enable
-#docker pull land007/node-home-agent:latest; rm -rf ~/docker/node-home-agent; docker rm -f node-home-agent ; docker run -it --privileged --label=com.centurylinklabs.watchtower.enable=true -v ~/docker/node-home-agent:/node -p 22280:80 -e "TIMER=30" -e "MAXTIME=30" --name node-home-agent --log-opt max-size=1m --log-opt max-file=1 land007/node-home-agent:latest
+#docker pull land007/node-dueros:latest; rm -rf ~/docker/node-dueros; docker rm -f node-dueros ; docker run -it --privileged --label=com.centurylinklabs.watchtower.enable=true -v ~/docker/node-dueros:/node -p 22280:80 -e "TIMER=30" -e "MAXTIME=30" --name node-dueros --log-opt max-size=1m --log-opt max-file=1 land007/node-dueros:latest
