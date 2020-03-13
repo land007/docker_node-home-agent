@@ -374,7 +374,7 @@ var accept_start_apply = function(num) {
 		});
 	});
 };
-
+//执行
 var start = async function() {
 	console.log('start1');
 	try {
@@ -421,33 +421,37 @@ var start = async function() {
 			}
 		}
 		console.log(ip_list);
-		//跟上次比较
-		let apply = false;
-		for(let i in ip_list) {
-			if(ip_list[i].exceed != start_apply_ip_list[i].exceed) {
-				start_apply_ip_list[i].exceed = ip_list[i].exceed;
-				apply = true;
-			}
-		}
-		if(apply) {
-			console.log('删除所有');
-			//删除所有
-			var content = await del_start_apply();
-			//添加断网
-			let num = 0;
-			for(let i in ip_list) {
-				if(ip_list[i].exceed) {
-					console.log('添加断网', ip_list[i].ip);
-					var content = await add_start_apply(ip_list[i].ip);
-					num++;
-				}
-			}
-			console.log('生效');
-			//生效
-			var content = await accept_start_apply(num);
-		}
+		await verify();
 	} catch(e) {
 		console.log('rrrrr', e);
+	}
+};
+//校验和生效
+var verify = async function() {
+	//跟上次比较
+	let apply = false;
+	for(let i in ip_list) {
+		if(ip_list[i].exceed != start_apply_ip_list[i].exceed) {
+			start_apply_ip_list[i].exceed = ip_list[i].exceed;
+			apply = true;
+		}
+	}
+	if(apply) {
+		console.log('删除所有');
+		//删除所有
+		var content = await del_start_apply();
+		//添加断网
+		let num = 0;
+		for(let i in ip_list) {
+			if(ip_list[i].exceed) {
+				console.log('添加断网', ip_list[i].ip);
+				var content = await add_start_apply(ip_list[i].ip);
+				num++;
+			}
+		}
+		console.log('生效');
+		//生效
+		var content = await accept_start_apply(num);
 	}
 };
 
@@ -479,6 +483,7 @@ var application_delay = function(ip) {
 	let ip_obj = get_ip_obj(ip);
 	if(ip_obj) {
 		ip_obj.time = 0;
+		ip_obj.exceed = false;
 	}
 	return ip_obj;
 };
