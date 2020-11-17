@@ -12,11 +12,20 @@ const unite = require('./unite');
 const home_device_list = require('./home_device_list');
 const querystring = require('querystring');
 
-const PipeMax = process.env['PIPEMAX'] || '20';// 同时任务数
-const PageMax = process.env['PAGEMAX'] || '8';// 最大页数
+const PipeMax = process.env['PIPEMAX'] || '20';//同时任务数
+const PageMax = process.env['PAGEMAX'] || '8';//最大页数
 
 const timer = parseInt(process.env['TIMER'] || '10');//秒钟
 const Cron = '*/' + timer + ' * * * * *';//每30秒触发
+// Example of job definition:
+// .---------------- minute (0 - 59)
+// |  .------------- hour (0 - 23)
+// |  |  .---------- day of month (1 - 31)
+// |  |  |  .------- month (1 - 12) OR jan,feb,mar,apr ...
+// |  |  |  |  .---- day of week (0 - 6) (Sunday=0 or 7) OR sun,mon,tue,wed,thu,fri,sat
+// |  |  |  |  |
+// *  *  *  *  * user-name  command to be executed
+//const Cron = process.env['CRON'] || '*/30 * * * * *';//每30秒触发
 const RouteHost = process.env['ROUTEHOST'] || '192.168.1.231:18080';
 const Basic = process.env['BASIC'] || 'bGFuZDAwNzo0MTk3MTg=';//路由器验证
 const maxTime = parseInt(process.env['MAXTIME'] || '1') * 60;//分钟

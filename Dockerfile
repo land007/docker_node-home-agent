@@ -16,7 +16,7 @@ ADD node/unite.js /node_/unite.js
 ENV PIPEMAX=20\
 	PAGEMAX=8\
 	SUBTRACTDAYS=1\
-#	CRON="30 1 1 * * *"\
+#	CRON="*/30 * * * * *"\
 	TIMER=30\
 	MAXTIME=40\
 	DbHost=0.0.0.0\
